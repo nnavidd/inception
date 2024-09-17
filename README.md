@@ -21,8 +21,8 @@ In the **Inception project**, we are tasked with setting up and managing our own
 
 ### Core Concepts Introduced in the Project:
 - **Docker**: Students use Docker to isolate environments and services, learning how to containerize applications.
-- **Nginx**: Used as a web server and reverse proxy, introducing students to networking and server setup.
+- **Nginx**: Used as a web server and reverse proxy, introducing us to networking and server setup.
 - **MariaDB/MySQL**: Setting up and interacting with databases.
-- **WordPress**: Running a simple content management system on top of the infrastructure, giving students insight into deploying web applications.
+- **WordPress**: Running a simple content management system on top of the infrastructure, giving insight into deploying web applications.
 
-The Inception project teaches students how to manage infrastructure in a modern way and provides a solid foundation for deeper system administration tasks and cloud computing. It’s often one of the first exposure points to the world of backend infrastructure and DevOps at 42.
+The Inception project teaches how to manage infrastructure in a modern way and provides a solid foundation for deeper system administration tasks and cloud computing. It’s often one of the first exposure points to the world of backend infrastructure and DevOps at 42.
