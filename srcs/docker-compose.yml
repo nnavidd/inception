@@ -16,9 +16,7 @@
 # env_file: ./srcs/.env  
 
 services:
-  # # Nginx service
   nginx:
-    # image: nginx
     container_name: nginx_service
     build: 
       context: ./requirements/nginx/
@@ -27,18 +25,19 @@ services:
     ports:
       - "${NGINX_PORT:?error}:$NGINX_PORT"  # Use environment variable for Nginx port
     volumes:
+      - wp_data:/var/www/html
       - ./requirements/nginx/conf/nginx.conf.template:/etc/nginx/nginx.conf.template # create this template to be used by envsubst in the nignx docker container
       - ./requirements/nginx/tools/nginx-entrypoint.sh:/usr/local/bin/nginx-entrypoint.sh
     env_file:
       - .env
-    # depends_on:
-    #   - wordpress
+    restart: unless-stopped
+    depends_on:
+      - wordpress
     networks:
       - inception
 
   # MariaDB service
   mariadb:
-    # image: mariadb:latest
     container_name: mariadb_service
     build: ./requirements/mariadb/
     env_file:
@@ -47,6 +46,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - inception
+    restart: always
     ports:
       - "3306:3306"
 
@@ -58,12 +58,11 @@ services:
       - .env
     depends_on:
       - mariadb
-    # ports:
-    #   - "8080:80"
     volumes:
       - wp_data:/var/www/html
     networks:
       - inception
+    restart: always
 
 # Networks
 networks:

@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/12 10:15:37 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/18 19:07:19 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/19 13:31:59 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ all: $(NAME)
 
 # Build and run all services
 $(NAME):
-	@docker compose -f $(DOCKER_COMPOSE_ADD) up -d
+	@docker compose -f $(DOCKER_COMPOSE_ADD) up --build -d
 	@echo "$(ORG)----- $(NAME) is running with MariaDB, Nginx, and WordPress! -----$(RESET)"
 stop:
 	@echo "$(ORG)----- Stoping $(NAME) services -----$(RESET)"
@@ -34,9 +34,8 @@ clean:
 	@echo "$(ORG)----- Cleaning stopped containers... -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) rm 
 	
-	# @docker container prune -f
-	# @echo "$(ORG)----- Cleaning unused images... -----$(RESET)"
-	# @docker image prune -f
+	@echo "$(ORG)----- Cleaning unused images... -----$(RESET)"	# @docker image prune -f
+	@docker container prune -f
 
 # Full clean: remove all containers, networks, volumes, images
 fclean: clean

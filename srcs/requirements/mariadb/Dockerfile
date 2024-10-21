@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/13 11:26:50 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/18 10:39:09 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/21 14:12:40 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ FROM debian:bullseye
 
 # Update the package manager
 RUN apt-get update && apt-get install -y mariadb-server gettext-base
+
+# Create necessary directories for the Unix socket
 RUN mkdir -p /run/mysql && chown mysql:mysql /run/mysql
 # RUN chown -R mysql:mysql /var/lib/mysql
 # RUN chmod -R 755 /var/lib/mysql

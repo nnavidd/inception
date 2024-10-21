@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/13 11:27:06 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/13 11:58:00 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/19 12:40:39 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,7 +40,6 @@
 
 # # the command that the docker container would be run with
 # CMD ["nginx", "-g", "daemon off;"]
-
 
 FROM debian:bullseye
 

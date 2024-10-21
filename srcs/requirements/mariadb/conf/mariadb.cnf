@@ -1,0 +1,20 @@
+[mysqld]
+user = root
+
+# Port or socket location where to connect (/etc/mysql/mariadb.cnf)
+# Listen on the default port
+port = 3306
+
+# Path for the Unix socket
+socket = /var/run/mysqld/mysqld.sock
+
+#
+# * Basic Settings (/etc/mysql/mariadb.conf.d/50-server.cnf)
+# # Data directory for MariaDB data
+datadir = /var/lib/mysql
+# Enable networking
+skip-networking = false
+bind-address = 0.0.0.0
+# MariaDB default is Latin1, but in Debian we rather default to the full
+# utf8 4-byte character set. See also client.cnf
+character-set-server     = utf8mb4
