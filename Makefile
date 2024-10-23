@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/12 10:15:37 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/19 13:31:59 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/23 19:31:36 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,8 +19,10 @@ all: $(NAME)
 
 # Build and run all services
 $(NAME):
-	@docker compose -f $(DOCKER_COMPOSE_ADD) up --build -d
+	@echo "$(ORG)----- $(NAME) is building MariaDB, Nginx, and WordPress containers! -----$(RESET)"
+	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
 	@echo "$(ORG)----- $(NAME) is running with MariaDB, Nginx, and WordPress! -----$(RESET)"
+	@docker compose -f $(DOCKER_COMPOSE_ADD) up -d
 stop:
 	@echo "$(ORG)----- Stoping $(NAME) services -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) down

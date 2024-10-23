@@ -64,6 +64,20 @@ services:
       - inception
     restart: always
 
+  #Phpmyadmin
+  # phpmyadmin:
+  #   container_name: phpmyadmin_service
+  #   build: ./requirements/bonus/phpadmin/
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - mariadb
+  #   restart: always
+  #   ports:
+  #     - 8081:80
+  #   networks:
+  #     - inception
+
 # Networks
 networks:
   inception:
