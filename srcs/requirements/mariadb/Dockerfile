@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/13 11:26:50 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/22 14:52:36 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/25 10:43:06 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ RUN apt-get update && apt-get install -y mariadb-server gettext-base
 EXPOSE 3306
 
 # Copy custom entrypoint script to handle initialization and permissions
-COPY ./tools/mariadb-entrypoint.sh /usr/local/bin/mariadb-entrypoint.sh
+COPY ./tools/mariadb-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/mariadb-entrypoint.sh
 
 # Copy the configuration file if you want to add custom MariaDB configs

@@ -44,6 +44,7 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
+      # - ./requirements/mariadb/tools/mariadb-entrypoint.sh:/usr/local/bin/mariadb-entrypoint.sh
     networks:
       - inception
     restart: always
@@ -65,18 +66,18 @@ services:
     restart: always
 
   #Phpmyadmin
-  adminer:
-    container_name: adminer_service
-    build: ./requirements/bonus/adminer/
-    env_file:
-      - .env
-    depends_on:
-      - mariadb
-    restart: always
-    ports:
-      - 8081:8080
-    networks:
-      - inception
+  # adminer:
+  #   container_name: adminer_service
+  #   build: ./requirements/bonus/adminer/
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - mariadb
+  #   restart: always
+  #   ports:
+  #     - 8081:8080
+  #   networks:
+  #     - inception
 
 # Networks
 networks:

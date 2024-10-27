@@ -1,54 +1,62 @@
 #!/bin/bash
 
-# Exit script on error
 set -e
 
-# Initialize MariaDB data directory if it doesn't exist
-if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "MariaDB data directory is not initialized. Initializing..."
-    mariadb-install-db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
-    
-    # Start MariaDB temporarily to run the initial setup
-    mysqld_safe --skip-networking &
-    pid="$!"
+if [$H]
 
-    # Wait for MariaDB to be ready (loop until successful connection)
-    while ! mysqladmin ping --silent; do
-        echo "Waiting for MariaDB to be ready..."
-        sleep 2
-    done
-
-    # Run initial database setup
-    echo "Setting up initial database..."
-
-    # Create root user with password
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
-    echo "Root user password set."
-
-    # Create the specified database if provided
-    if [ -n "${MYSQL_DATABASE}" ]; then
-        echo "Creating database: ${MYSQL_DATABASE}"
-        mysql -e "CREATE DATABASE IF NOT EXISTS \`${MYSQL_DATABASE}\`;"
-    fi
-
-    # Create the specified user and grant privileges if provided
-    if [ -n "${MYSQL_USER}" ] && [ -n "${MYSQL_PASSWORD}" ]; then
-        echo "Creating user: ${MYSQL_USER} with password ${MYSQL_PASSWORD}"
-        mysql -e "CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-        
-        if [ -n "${MYSQL_DATABASE}" ]; then
-            echo "Granting privileges on ${MYSQL_DATABASE} to ${MYSQL_USER}"
-            mysql -e "GRANT ALL PRIVILEGES ON \`${MYSQL_DATABASE}\`.* TO '${MYSQL_USER}'@'%';"
-        fi
-    fi
-
-    # Flush privileges to ensure they are available
-    mysql -e "FLUSH PRIVILEGES;"
-
-    # Shutdown MariaDB after setup
-    mysqladmin shutdown
-    echo "Initial database setup complete."
+# Check if MariaDB data directory is already initialized
+if [ -d "/var/lib/mysql/mysql" ]; then
+  echo "MariaDB directory already initialized."
+else
+  echo "MariaDB data directory not found. Initializing..."
+  # Initialize the MariaDB data directory
+  mariadb-install-db --user=mysql --datadir=/var/lib/mysql
 fi
 
-# Start MariaDB server (mysqld_safe ensures proper startup)
-exec "$@"
+# Start MariaDB in the background to perform setup
+mysqld_safe --skip-networking &
+mariadb_pid="$!"
+
+# Wait for MariaDB to be ready for connections
+echo "Waiting for MariaDB to start..."
+until mysqladmin ping --silent; do
+  sleep 2
+done
+
+# Check if root user has a password
+if mysql -uroot -e "SELECT 1" &>/dev/null; then
+  echo "Root user exists."
+else
+  echo "Setting root password..."
+  mysql -uroot -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';"
+fi
+
+# Create WordPress database and user if they don't exist
+echo "Checking if WordPress database exists..."
+DB_EXISTS=$(mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "SHOW DATABASES LIKE '${MYSQL_DATABASE}';" | grep "${MYSQL_DATABASE}" || true)
+if [ -z "$DB_EXISTS" ]; then
+  echo "Creating WordPress database: ${MYSQL_DATABASE}"
+  mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE DATABASE ${MYSQL_DATABASE};"
+else
+  echo "Database ${MYSQL_DATABASE} already exists."
+fi
+
+# Check if WordPress user exists
+USER_EXISTS=$(mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "SELECT User FROM mysql.user WHERE User = '${MYSQL_USER}';" | grep "${MYSQL_USER}" || true)
+if [ -z "$USER_EXISTS" ]; then
+  echo "Creating WordPress user: ${MYSQL_USER}"
+  mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+  mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';"
+else
+  echo "User ${MYSQL_USER} already exists."
+fi
+
+# Flush privileges and stop MariaDB background process
+mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"
+mysqladmin -uroot -p"${MYSQL_ROOT_PASSWORD}" shutdown
+
+# Wait for the background process to stop
+wait "$mariadb_pid"
+
+# Restart MariaDB in the foreground
+exec mysqld_safe

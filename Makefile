@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/12 10:15:37 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/23 23:28:47 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/27 12:47:34 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,13 +20,13 @@ all: $(NAME)
 # Build and run all services
 $(NAME):
 	@echo "$(ORG)----- $(NAME) is building MariaDB, Nginx, and WordPress containers! -----$(RESET)"
-#@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
-	@docker compose -f $(DOCKER_COMPOSE_ADD) build
+	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
+#	@docker compose -f $(DOCKER_COMPOSE_ADD) build
 	@echo "$(ORG)----- $(NAME) is running with MariaDB, Nginx, and WordPress! -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) up -d
+	@docker compose -f $(DOCKER_COMPOSE_ADD) up
 stop:
 	@echo "$(ORG)----- Stoping $(NAME) services -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) down
+	@docker compose -f $(DOCKER_COMPOSE_ADD) down -v
 
 restart:
 	@echo "$(ORG)----- Stoping $(NAME) services -----$(RESET)"
@@ -43,7 +43,7 @@ clean:
 # Full clean: remove all containers, networks, volumes, images
 fclean: clean
 	@echo "$(ORG)----- Stopping and removing containers... -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) down
+	@docker compose -f $(DOCKER_COMPOSE_ADD) down -v
 	@echo "$(ORG)----- Removing all images... -----$(RESET)"
 	@docker rmi $(shell docker compose -f $(DOCKER_COMPOSE_ADD) images -q)
 
