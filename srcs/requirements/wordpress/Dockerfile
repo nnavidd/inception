@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/17 17:26:52 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/25 10:43:14 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/27 15:12:33 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ FROM debian:bullseye
 
 # Install necessary packages: PHP-FPM, PHP extensions, and WordPress dependencies
 RUN apt-get update && \
-    apt-get install -y php-fpm php-mysql curl wget unzip php-gd php-mbstring php-xml php-curl mariadb-client
+	apt-get install -y php-fpm php-mysql curl wget unzip php-gd php-mbstring php-xml php-curl mariadb-client
 
 # Copy the .conf in the html directory
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/
@@ -26,14 +26,14 @@ RUN mkdir /run/php
 # Download WordPress
 WORKDIR /var/www/html
 RUN wget https://wordpress.org/latest.tar.gz && \
-    tar -xvf latest.tar.gz && \
-    mv wordpress/* . && \
-    rm -rf wordpress latest.tar.gz
+	tar -xvf latest.tar.gz && \
+	mv wordpress/* . && \
+	rm -rf wordpress latest.tar.gz
 
 # Install WP-CLI (use it to automatically configure the WordPress)
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
-    chmod +x wp-cli.phar && \
-    mv wp-cli.phar /usr/local/bin/wp
+	chmod +x wp-cli.phar && \
+	mv wp-cli.phar /usr/local/bin/wp
 
 # Copy entrypoint script and give execution permissions
 COPY ./tools/wordpress-entrypoint.sh /usr/local/bin/

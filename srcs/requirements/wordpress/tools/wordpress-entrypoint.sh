@@ -23,7 +23,7 @@ else
     echo "starting to install wordpress"
 	wp core install \
         --url="$DOMAIN_NAME" \
-        --title="Your Site Title" \
+        --title="$TITLE" \
         --admin_user="$WP_ADMIN_USER" \
         --admin_password="$WP_ADMIN_PASSWORD" \
         --admin_email="$WP_ADMIN_EMAIL" \
@@ -32,7 +32,12 @@ else
     echo "WordPress installation completed."
 
     # Install and activate a plugin (e.g., Yoast SEO)
-    wp plugin install yoast-seo --activate --allow-root
+    # wp plugin install Bute --activate --allow-root
+	# Download and activate the theme
+	curl -L -o accademia.zip https://downloads.wordpress.org/theme/accademia.zip
+	unzip accademia.zip -d /var/www/html/wp-content/themes
+	rm accademia.zip
+	wp theme activate accademia --allow-root
 fi
 
 exec "$@"

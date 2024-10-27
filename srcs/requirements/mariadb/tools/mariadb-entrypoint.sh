@@ -2,8 +2,6 @@
 
 set -e
 
-if [$H]
-
 # Check if MariaDB data directory is already initialized
 if [ -d "/var/lib/mysql/mysql" ]; then
   echo "MariaDB directory already initialized."
