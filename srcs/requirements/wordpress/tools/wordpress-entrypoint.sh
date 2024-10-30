@@ -1,10 +1,18 @@
 #!/bin/sh
+
 rm -f ./wp-config.php
 
 # Wait for the database to be available
 echo "Waiting for MariaDB to be available..."
 until mysqladmin ping -h "$WORDPRESS_DB_HOST" --silent; do
     echo "MariaDB is unavailable - waiting..."
+    sleep 3
+done
+
+# Wait for Redis to be available
+echo "Waiting for Redis to be available..."
+until redis-cli -h redis -p 6379 ping; do
+    echo "Redis is unavailable - waiting..."
     sleep 3
 done
 
@@ -17,11 +25,12 @@ else
     sed -i "s/username_here/$WORDPRESS_DB_USER/g" wp-config-sample.php
     sed -i "s/password_here/$WORDPRESS_DB_PASSWORD/g" wp-config-sample.php
     sed -i "s/localhost/$WORDPRESS_DB_HOST/g" wp-config-sample.php
+    sed -i "s/define( 'WP_DEBUG', false );/define( 'WP_DEBUG', true );/g" wp-config-sample.php
     cp wp-config-sample.php wp-config.php 2>&1 | tee /var/log/wp-install.log
 
-    # Install WordPress with WP-CLI, adding --allow-root to all commands
-    echo "starting to install wordpress"
-	wp core install \
+    # Install WordPress using WP-CLI with root permissions
+    echo "Starting WordPress installation..."
+    wp core install \
         --url="$DOMAIN_NAME" \
         --title="$TITLE" \
         --admin_user="$WP_ADMIN_USER" \
@@ -31,13 +40,16 @@ else
 
     echo "WordPress installation completed."
 
-    # Install and activate a plugin (e.g., Yoast SEO)
-    # wp plugin install Bute --activate --allow-root
-	# Download and activate the theme
-	curl -L -o accademia.zip https://downloads.wordpress.org/theme/accademia.zip
-	unzip accademia.zip -d /var/www/html/wp-content/themes
-	rm accademia.zip
-	wp theme activate accademia --allow-root
+    echo "Starting redis configuration..."
+	wp config set WP_REDIS_HOST redis --allow-root
+  	wp config set WP_REDIS_PORT 6379 --raw --allow-root
+ 	wp config set WP_CACHE_KEY_SALT $DOMAIN_NAME --allow-root
+ 	wp config set WP_REDIS_CLIENT phpredis --allow-root
+	wp plugin install redis-cache --activate --allow-root
+    wp plugin update --all --allow-root
+	wp redis enable --allow-root
+    echo "Redis configuration completed."
 fi
 
+# Execute the container’s command
 exec "$@"

@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/12 10:15:37 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/27 21:34:33 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/30 19:05:09 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,23 +24,26 @@ create_data_dirs:
 	@if [ ! -d "$(ADD)" ]; then mkdir -p $(ADD) && chown ${USER}:${USER} $(ADD) && chmod +x $(ADD); fi
 	@if [ ! -d "$(ADD)/db_data" ]; then mkdir -p $(ADD)/db_data; fi
 	@if [ ! -d "$(ADD)/wp_data" ]; then mkdir -p $(ADD)/wp_data; fi
+	@if [ ! -d "$(ADD)/rd_data" ]; then mkdir -p $(ADD)/rd_data; fi
 	@echo "$(ORG) ----- The address of $(CYAN) $(ADD) $(ORG) is created!  -----$(RESET)"
 
 # Build and run all services
 $(NAME):
 #	@echo "$(ORG)----- $(NAME) is building MariaDB, Nginx, and WordPress containers! -----$(RESET)"
 	@echo "$(ORG)----- $(NAME) is building: $(MAGENTA) $(SERVICES) $(ORG) ! -----$(RESET)"
-#	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
-	@docker compose -f $(DOCKER_COMPOSE_ADD) build
+	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
+#	@docker compose -f $(DOCKER_COMPOSE_ADD) build
 	@echo "$(ORG)----- $(NAME) is running up! -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) up
 stop:
 	@echo "$(ORG)----- Stoping $(MAGENTA) $(SERVICES) $(ORG) -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) down
 
-restart:
-	@echo "$(ORG)----- Stoping $(NAME) services -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) restart
+rebuild:
+	@echo "$(ORG)----- down $(NAME) services -----$(RESET)"
+	@docker compose -f $(DOCKER_COMPOSE_ADD) down
+	@echo "$(ORG)----- up $(NAME) services -----$(RESET)"
+	@docker compose -f $(DOCKER_COMPOSE_ADD) up --build
 
 # Clean stopped containers and images
 clean:

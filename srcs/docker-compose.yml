@@ -45,7 +45,7 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - inception
-    restart: always
+    restart: on-failure  # Restarts MariaDB on failures, useful for handling crashes
     ports:
       - "3306:3306"
 
@@ -57,6 +57,7 @@ services:
       - .env
     depends_on:
       - mariadb
+      - redis
     volumes:
       - wp_data:/var/www/html
     networks:
@@ -76,6 +77,18 @@ services:
       - 8081:8080
     networks:
       - inception
+
+  #redis
+  redis:
+    container_name: redis_service
+    build: ./requirements/bonus/redis/
+    ports:
+      - "6379:6379"  # Redis default port
+    volumes:
+      - rd_data:/data
+    networks:
+      - inception
+    restart: unless-stopped  # Keeps Redis running unless manually stopped
 
 # Networks
 networks:
@@ -98,3 +111,10 @@ volumes:
       type: none
       o: bind
       device: $HOME/data/wp_data
+  rd_data:
+    name: rd_data
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $HOME/data/rd_data

@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/17 17:26:52 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/27 15:12:33 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/10/30 10:09:30 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,21 @@ FROM debian:bullseye
 
 # Install necessary packages: PHP-FPM, PHP extensions, and WordPress dependencies
 RUN apt-get update && \
-	apt-get install -y php-fpm php-mysql curl wget unzip php-gd php-mbstring php-xml php-curl mariadb-client
-
+    apt-get install -y \
+        php-fpm \
+        php-mysql \
+        php-redis \
+        php-gd php-cli \
+        php-mbstring \
+        php-xml \
+        php-curl \
+        mariadb-client \
+        curl \
+        wget \
+        unzip \
+		nano \
+		redis-tools
+		
 # Copy the .conf in the html directory
 COPY ./conf/www.conf /etc/php/7.4/fpm/pool.d/
 
