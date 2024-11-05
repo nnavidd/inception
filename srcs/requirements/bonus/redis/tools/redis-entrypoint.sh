@@ -2,7 +2,8 @@
 
 if [ ! -f "/etc/redis/redis.conf.bak" ]; then
 
-    cp /etc//redis/redis.conf /etc/redis/redis.conf.bak #We create the .bak to notify the program if it exists, don't go to the loop anymore
+	#The .bak is created to notify the program if it exists, don't go to the loop anymore
+    cp /etc//redis/redis.conf /etc/redis/redis.conf.bak
 
     sed -i "s|bind 127.0.0.1|#bind 127.0.0.1|g" /etc/redis/redis.conf
     sed -i "s|# maxmemory <bytes>|maxmemory 2mb|g" /etc/redis/redis.conf
@@ -11,5 +12,3 @@ if [ ! -f "/etc/redis/redis.conf.bak" ]; then
 fi
 
 exec "$@"
-# redis-server --protected-mode no
-# CMD ["redis-server", "/etc/redis/redis.conf"]

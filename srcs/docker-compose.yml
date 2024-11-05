@@ -15,6 +15,7 @@
 # env_file: ./srcs/.env  
 
 services:
+  # nginx service
   nginx:
     container_name: nginx_service
     build: 
@@ -34,11 +35,14 @@ services:
       - wordpress
     networks:
       - inception
-
+  
   # MariaDB service
   mariadb:
     container_name: mariadb_service
     build: ./requirements/mariadb/
+    secrets:
+      - db_root_pw
+      - wp_db_pwd
     env_file:
       - .env
     volumes:
@@ -48,11 +52,14 @@ services:
     restart: on-failure  # Restarts MariaDB on failures, useful for handling crashes
     ports:
       - "3306:3306"
-
-  #WordPress service
+  
+  # WordPress service
   wordpress:
     container_name: wordpress_service
     build: ./requirements/wordpress/
+    secrets:
+      - wp_db_pwd
+      - wp_admin_pwd
     env_file:
       - .env
     depends_on:
@@ -89,6 +96,14 @@ services:
     networks:
       - inception
     restart: unless-stopped  # Keeps Redis running unless manually stopped
+
+secrets:
+  db_root_pw:
+    file: ../secrets/db_root_pw.txt
+  wp_db_pwd:
+    file: ../secrets/wp_db_pwd.txt
+  wp_admin_pwd:
+    file: ../secrets/wp_admin_pwd.txt
 
 # Networks
 networks:

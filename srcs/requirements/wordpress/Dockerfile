@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/17 17:26:52 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/30 10:09:30 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/11/01 15:48:23 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,6 +38,7 @@ RUN mkdir /run/php
 
 # Download WordPress
 WORKDIR /var/www/html
+
 RUN wget https://wordpress.org/latest.tar.gz && \
 	tar -xvf latest.tar.gz && \
 	mv wordpress/* . && \
@@ -53,7 +54,12 @@ COPY ./tools/wordpress-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/wordpress-entrypoint.sh
 
 # Set appropriate permissions for WordPress files
-RUN chown -R www-data:www-data /var/www/html
+# RUN chown -R www-data:www-data /var/www/html
+
+# Ensure appropriate ownership and permissions
+RUN chown -R www-data:www-data /var/www/html && \
+    find /var/www/html -type d -exec chmod 755 {} \; && \
+    find /var/www/html -type f -exec chmod 644 {} \;
 
 # Expose port for PHP-FPM
 EXPOSE 9000

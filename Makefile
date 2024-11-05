@@ -6,15 +6,15 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/12 10:15:37 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/30 19:05:09 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/11/01 22:47:03 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # Project and services
 NAME := inception
 DOCKER_COMPOSE_ADD := ./srcs/docker-compose.yml
-SERVICES= WordPress MariaDB Nginx Adminer
-# Default target: Build and start the project
+SERVICES= WordPress MariaDB Nginx Adminer Redis
+
 ADD = ${HOME}/data/
 
 all: create_data_dirs $(NAME)
@@ -29,10 +29,9 @@ create_data_dirs:
 
 # Build and run all services
 $(NAME):
-#	@echo "$(ORG)----- $(NAME) is building MariaDB, Nginx, and WordPress containers! -----$(RESET)"
 	@echo "$(ORG)----- $(NAME) is building: $(MAGENTA) $(SERVICES) $(ORG) ! -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
-#	@docker compose -f $(DOCKER_COMPOSE_ADD) build
+#	@docker compose -f $(DOCKER_COMPOSE_ADD) build --no-cache
+	@docker compose -f $(DOCKER_COMPOSE_ADD) build
 	@echo "$(ORG)----- $(NAME) is running up! -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) up
 stop:
@@ -41,7 +40,7 @@ stop:
 
 rebuild:
 	@echo "$(ORG)----- down $(NAME) services -----$(RESET)"
-	@docker compose -f $(DOCKER_COMPOSE_ADD) down
+	@docker compose -f $(DOCKER_COMPOSE_ADD) down -v
 	@echo "$(ORG)----- up $(NAME) services -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) up --build
 
@@ -58,7 +57,9 @@ fclean: clean
 	@echo "$(ORG)----- Stopping and removing containers... -----$(RESET)"
 	@docker compose -f $(DOCKER_COMPOSE_ADD) down -v
 	@echo "$(ORG)----- Removing all images... -----$(RESET)"
-	@docker rmi $(shell docker compose -f $(DOCKER_COMPOSE_ADD) images -q)
+	@if [ -n "$$(docker compose -f $(DOCKER_COMPOSE_ADD) images -q)" ]; then \
+		docker rmi $$(docker compose -f $(DOCKER_COMPOSE_ADD) images -q); \
+	fi
 
 # Rebuild everything
 re: fclean all

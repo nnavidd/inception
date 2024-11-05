@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/13 11:26:50 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/10/27 15:23:43 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/11/05 16:44:52 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,5 +29,10 @@ COPY ./conf/mariadb.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 # Run the custom entrypoint script
 ENTRYPOINT ["/usr/local/bin/mariadb-entrypoint.sh"]
 
+
+# mysqld_safe: Adds safety features like automatic restart and error logging.
+# mysqld: Directly starts the MySQL server without additional safety features.
+# mysql.server: A script that uses mysqld_safe to start and stop the MySQL server, often integrated with system service management.
+# Using mysqld_safe is recommended for its added reliability and logging capabilities, especially in production environments.
 # Run the MariaDB server in the foreground
 CMD ["mysqld_safe"]
