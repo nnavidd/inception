@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/17 17:26:52 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/11/01 15:48:23 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/11/12 11:23:41 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,3 +69,10 @@ ENTRYPOINT ["/usr/local/bin/wordpress-entrypoint.sh"]
 
 # Launch PHP-FPM in foreground and ignore daemonize from conf file (-F)
 CMD ["/usr/sbin/php-fpm7.4", "-F"]
+
+# commands:
+# wp redis status --allow-root
+# wp plugin list --allow-root
+# wp active/deactivate <plugin_name> --allow-root
+# wp <plugin_name> enable --allow-root
+# redis-cli -h redis -p 6379 ping

@@ -6,7 +6,7 @@
 #    By: nnabaeei <nnabaeei@student.42heilbronn.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/13 11:26:50 by nnabaeei          #+#    #+#              #
-#    Updated: 2024/11/05 16:44:52 by nnabaeei         ###   ########.fr        #
+#    Updated: 2024/11/12 10:38:08 by nnabaeei         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,3 +36,10 @@ ENTRYPOINT ["/usr/local/bin/mariadb-entrypoint.sh"]
 # Using mysqld_safe is recommended for its added reliability and logging capabilities, especially in production environments.
 # Run the MariaDB server in the foreground
 CMD ["mysqld_safe"]
+
+
+#commands:
+# mysql -u <user name> -p<pwd>
+# select database: USE <your_database_name>;
+# slecet table: SELECT * FROM <your_table_name>;
+# display column or row: SELECT <column1>, <column2> FROM <your_table_name>;
